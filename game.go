@@ -29,7 +29,7 @@ func (pp Piece) AvailableMoves(x, y float64) [][2]float64 {
 	nextMoves = append(nextMoves, currentPlace)
 	return nextMoves
 }
-
+//TODO: fix with interface
 type Pawn struct {
 	Piece
 }
@@ -58,13 +58,40 @@ type Knight struct {
 	Piece
 }
 
+func validateIsInsideBoard(p [2]float64) bool {
+	x := p[0]
+	y := p[1]
+	if x >= 0 && x < 8 && y >= 0 && y < 8 {
+		return true
+	}else
+	{
+		return false
+	}
+}
+
 func (n Knight) AvailableMoves(x, y float64) [][2]float64 {
 	var nextMoves [][2]float64
-	//TODO
-	currentPlace := [2]float64{x,y}
-	nextMoves = append(nextMoves, currentPlace)
+	//var posibleNextMoves [2]float64
+	// array of slices
+	posibleNextMoves := [][2]float64{
+		{x-2.0,y-1.0},
+		{x-2.0,y+1.0},
+		{x-1.0,y-2.0},
+		{x-1.0,y+2.0},
+		{x+1,y-2},
+		{x+1,y+2},
+		{x+2,y-1},
+		{x+2,y+1},
+	}
+	 for _, p := range posibleNextMoves {
+		 if validateIsInsideBoard(p) {
+			nextMoves = append(nextMoves, p)
+		 }
+	 }
+
 	return nextMoves
 }
+
 type Rook struct {
 	Piece
 }
@@ -109,76 +136,101 @@ type Game struct {
 type Player struct {
 	name string
 }
+//TODO: use interface
+var board [8][8]Pawn
 
-var board [8][8]Mover
 
 func (g Game) PopulateInitialBoard(c bool) {
-	if c == WHITE {
-				//place pawns
-				for x:= 0; x < 8; x++ {
-					board[x][6] = Pawn{Piece{ImageFile:"images/wpawn.png",Color:true}}
-					board[x][1] = Pawn{Piece{ImageFile:"images/bpawn.png",Color:true}}
-				}
+	//place pawns
+	//TODO this test dont work
+	/*if ( c == WHITE ) {
+		strcolor := "w"
+		strcolor2 := "b"
+	} else {
+		strcolor := "b"
+		strcolor2 := "w"
+	} */
+	strcolor := "w"
+	strcolor2 := "b"
 
-				// place pieces
-				board[0][7] = Rook{Piece{ImageFile:"images/wrook.png",Color:true}}
-				//board[0][7].AvailableMoves(1.0, 2.0);
-				board[1][7] = Knight{Piece{ImageFile:"images/wknight.png",Color:true}}
-			//	board[1][7].AvailableMoves(1.0, 2.0);
-				board[2][7] = Bishop{Piece{ImageFile:"images/wbishop.png",Color:true}}
-			//	board[2][7].AvailableMoves(1.0, 2.0);
-				board[3][7] = Queen{Piece{ImageFile:"images/wqueen.png",Color:true}}
-		//		board[3][7].AvailableMoves(1.0, 2.0);
-				board[4][7] = King{Piece{ImageFile:"images/wking.png",Color:true}}
-	//			board[4][7].AvailableMoves(1.0, 2.0);
-				board[5][7] = Bishop{Piece{ImageFile:"images/wbishop.png",Color:true}}
-	//			board[5][7].AvailableMoves(1.0, 2.0);
-				board[6][7] = Knight{Piece{ImageFile:"images/wknight.png",Color:true}}
-	//			board[6][7].AvailableMoves(1.0, 2.0);
-				board[7][7] = Rook{Piece{ImageFile:"images/wrook.png",Color:true}}
-		//		board[7][7].AvailableMoves(1.0, 2.0);
-
-				board[0][0] = Rook{Piece{ImageFile:"images/brook.png",Color:false}}
-		//		board[0][0].AvailableMoves(1.0, 2.0)
-				board[1][0] = Knight{Piece{ImageFile:"images/bknight.png",Color:false}}
-		//		board[1][0].AvailableMoves(1.0, 2.0)
-				board[2][0] = Bishop{Piece{ImageFile:"images/bbishop.png",Color:false}}
-		//		board[2][0].AvailableMoves(1.0, 2.0)
-				board[3][0] = Queen{Piece{ImageFile:"images/bqueen.png",Color:false}}
-		//		board[3][0].AvailableMoves(1.0, 2.0)
-				board[4][0] = King{Piece{ImageFile:"images/bking.png",Color:false}}
-	//			board[4][0].AvailableMoves(1.0, 2.0)
-				board[5][0] = Bishop{Piece{ImageFile:"images/bbishop.png",Color:false}}
-	//			board[5][0].AvailableMoves(1.0, 2.0)
-				board[6][0] = Knight{Piece{ImageFile:"images/bknight.png",Color:false}}
-	//			board[6][0].AvailableMoves(1.0, 2.0)
-				board[7][0] = Rook{Piece{ImageFile:"images/brook.png",Color:false}}
-	//			board[7][0].AvailableMoves(1.0, 2.0)
+	log.Print(strcolor)
+	for x:= 0; x < 8; x++ {
+			board[x][6] = Pawn{Piece{ImageFile:"images/" + strcolor +"pawn.png",Color:true}}
+			board[x][1] = Pawn{Piece{ImageFile:"images/" + strcolor2 +"pawn.png",Color:true}}
 	}
+	// place pieces
+	//TODO: apply interface make it work
+	//board[0][7] = Rook{Piece{ImageFile:"images/wrook.png",Color:true}}
+	board[0][7] = Pawn{Piece{ImageFile:"images/"+strcolor+"rook.png",Color:true}}
+	//board[1][7] = Knight{Piece{ImageFile:"images/wknight.png",Color:true}}
+	board[1][7] = Pawn{Piece{ImageFile:"images/" + strcolor +"knight.png",Color:true}}
+	//board[2][7] = Bishop{Piece{ImageFile:"images/wbishop.png",Color:true}}
+	board[2][7] = Pawn{Piece{ImageFile:"images/" + strcolor +"bishop.png",Color:true}}
+	//board[3][7] = Queen{Piece{ImageFile:"images/wqueen.png",Color:true}}
+	board[3][7] = Pawn{Piece{ImageFile:"images/" + strcolor +"queen.png",Color:true}}
+	//board[4][7] = King{Piece{ImageFile:"images/wking.png",Color:true}}
+	board[4][7] = Pawn{Piece{ImageFile:"images/" + strcolor +"king.png",Color:true}}
+	//board[5][7] = Bishop{Piece{ImageFile:"images/wbishop.png",Color:true}}
+	board[5][7] = Pawn{Piece{ImageFile:"images/" + strcolor +"bishop.png",Color:true}}
+	//board[6][7] = Knight{Piece{ImageFile:"images/wknight.png",Color:true}}
+	board[6][7] = Pawn{Piece{ImageFile:"images/" + strcolor +"knight.png",Color:true}}
+	//board[7][7] = Rook{Piece{ImageFile:"images/wrook.png",Color:true}}
+	board[7][7] = Pawn{Piece{ImageFile:"images/" + strcolor +"rook.png",Color:true}}
+
+	board[0][0] = Pawn{Piece{ImageFile:"images/" + strcolor2 +"rook.png",Color:false}}
+	//board[0][0] = Rook{Piece{ImageFile:"images/brook.png",Color:false}}
+	board[1][0] = Pawn{Piece{ImageFile:"images/" + strcolor2 +"knight.png",Color:false}}
+	//board[1][0] = Knight{Piece{ImageFile:"images/bknight.png",Color:false}}
+	board[2][0] = Pawn{Piece{ImageFile:"images/" + strcolor2 +"bishop.png",Color:false}}
+	//board[2][0] = Bishop{Piece{ImageFile:"images/bbishop.png",Color:false}}
+	board[3][0] = Pawn{Piece{ImageFile:"images/" + strcolor2 +"queen.png",Color:false}}
+	//board[3][0] = Queen{Piece{ImageFile:"images/bqueen.png",Color:false}}
+	board[4][0] = Pawn{Piece{ImageFile:"images/" + strcolor2 +"king.png",Color:false}}
+	//board[4][0] = King{Piece{ImageFile:"images/bking.png",Color:false}}
+	board[5][0] = Pawn{Piece{ImageFile:"images/" + strcolor2 +"bishop.png",Color:false}}
+	//board[5][0] = Bishop{Piece{ImageFile:"images/bbishop.png",Color:false}}
+	board[6][0] = Pawn{Piece{ImageFile:"images/" + strcolor2 +"knight.png",Color:false}}
+	//board[6][0] = Knight{Piece{ImageFile:"images/bknight.png",Color:false}}
+	board[7][0] = Pawn{Piece{ImageFile:"images/" + strcolor2 +"rook.png",Color:false}}
+	//board[7][0] = Rook{Piece{ImageFile:"images/brook.png",Color:false}}
 }
 
 func (g Game) DrawBoard(da *gtk.DrawingArea, cr *cairo.Context) {
+	i := 0;
 	for x := range board {
+		i++
 		for y := range board[x] {
+			i++
 			ipiece := board[x][y]
-			if (ipiece == nil) {
+			log.Print("x: ")
+			log.Print(x)
+			log.Print("y: ")
+			log.Print(y)
+			log.Print("Piece: ")
+			log.Print(ipiece)
+			log.Print("+++++")
+			log.Print(i);
+			log.Print("+++++")
+			/*if (ipiece == nil) {
 				continue
-			}
-			//TODO better way to check if no piece object in the array
-			if y %2 == 0 {
+			}*/
+			if i % 2 == 0 {
 				cr.SetSourceRGBA(0, 0, 2, 0.1)
 			} else
 			{
-				cr.SetSourceRGBA(0, 0, 2, 0.5)
+				cr.SetSourceRGBA(0, 0, 2, 0.3)
 			}
-			if (ipiece.(Piece).ImageFile == "") {
+			//TODO apply interface
+			//if (ipiece.(Piece).ImageFile == "") {
+			if (ipiece.ImageFile == "") {
 		 	    cr.Rectangle(float64(x)*UNITSIZE, float64(y)*UNITSIZE, UNITSIZE, UNITSIZE)
 				cr.Fill()
 				continue
 			}
 		    cr.Rectangle(float64(x)*UNITSIZE, float64(y)*UNITSIZE, UNITSIZE, UNITSIZE)
 			cr.Fill()
-			p, _ := gdk.PixbufNewFromFile(ipiece.(Piece).ImageFile)
+			//p, _ := gdk.PixbufNewFromFile(ipiece.(Piece).ImageFile)
+			p, _ := gdk.PixbufNewFromFile(ipiece.ImageFile)
 			gtk.GdkCairoSetSourcePixBuf(cr, p, float64(x)*UNITSIZE, float64(y)*UNITSIZE)
 		    cr.Rectangle(float64(x)*UNITSIZE, float64(y)*UNITSIZE, UNITSIZE, UNITSIZE)
 			cr.Fill()
@@ -188,10 +240,12 @@ func (g Game) DrawBoard(da *gtk.DrawingArea, cr *cairo.Context) {
 
 
 func main() {
+	piecen := Pawn{Piece{"images/wpawn.png",true}}
+	board[0][6] = piecen
 
 	gtk.Init(nil)
 	GameI := Game{"raul","pedro", true}
-	GameI.PopulateInitialBoard(WHITE)
+	GameI.PopulateInitialBoard(true)
 	// gui boilerplate
 	win, err := gtk.WindowNew(gtk.WINDOW_TOPLEVEL)
 	if err != nil {
